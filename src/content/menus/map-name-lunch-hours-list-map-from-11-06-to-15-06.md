@@ -1,6 +1,6 @@
 ---
-name: Dinner
+name: Breakfast
 hours:
-  - from: 16:06
-    to: 22:06
+  - from: 06:06
+    to: 10:06
 ---
