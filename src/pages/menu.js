@@ -29,7 +29,11 @@ const Menu = () => {
     <Layout>
       <MenuPage>
         <section className="menu-cover">
-          <img alt="table with food" className="menu-cover-img" src={menuCover}></img>
+          <img
+            alt="table with food"
+            className="menu-cover-img"
+            src={menuCover}
+          ></img>
         </section>
         <MenuComponent />
       </MenuPage>

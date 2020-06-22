@@ -1,17 +1,158 @@
 backend:
   name: github
-  repo: CaninoDev/restaurant-template.git-aaa
+  repo: CaninoDev/restaurant-template
 
 media_folder: static/img
 public_folder: /img
 
 collections:
-  - name: "homePage"
-    label: "Home Page"
+  - name: "page"
+    label: "Pages"
     files:
       - file: "src/content/landing-content.md"
         label: "Landing Page"
         name: "landingPage"
         fields:
-          - { label: "Landing Heading", name: landingHeading, widget: string }
-          - { label: "Landing subtext", name: "landingSubtext", widget: string }
+          - { label: Heading, name: heading, widget: string }
+          - { label: Subtext, name: subtext, widget: text }
+      - file: "src/content/contact-info.md"
+        label: "Contact Info Page"
+        name: "contactpage"
+        fields:
+          - { label: Name, name: name, widget: string }
+          - { label: Address1, name: address1, widget: string }
+          - { label: Address2, name: address2, widget: string }
+          - { label: City, name: city, widget: string }
+          - { label: State, name: state, widget: string }
+          - { label: ZipCode, name: zipCode, widget: number }
+          - { label: eMail, name: eMail, widget: string }
+          - { label: "Telephone Number", name: telphone, widget: string }
+
+  - name: menus
+    label: Menu
+    folder: "src/content/menus"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: Name, name: name, widget: string }
+      - { label: Description, name: description, widget: text, required: false }
+      - {
+          label: Hours,
+          name: hours,
+          widget: list,
+          fields:
+            [
+              {
+                label: From,
+                name: from,
+                widget: datetime,
+                dateFormat: false,
+                format: "HH:MM",
+              },
+              {
+                label: To,
+                name: to,
+                widget: datetime,
+                dateFormat: false,
+                format: "HH:MM",
+              },
+            ],
+          required: false,
+        }
+      - {
+          label: Sections,
+          name: sections,
+          widget: list,
+          fields:
+            [
+              { label: Section, name: section, widget: string },
+              {
+                label: "Food Items",
+                name: fooditem,
+                widget: list,
+                types:
+                  [
+                    {
+                      label: Dishes,
+                      name: dishes,
+                      widget: list,
+                      collection: dish,
+                      valueField: name,
+                      searchFields: ["name"],
+                      multiple: true,
+                      required: false,
+                    },
+                    {
+                      label: Drinks,
+                      name: drinks,
+                      widget: list,
+                      collection: drink,
+                      valueField: name,
+                      searchFields: ["name"],
+                      multiple: true,
+                      required: false,
+                    },
+                  ],
+              },
+            ],
+        }
+
+  - name: side
+    label: "Side Dish"
+    folder: "src/content/sides"
+    create: true 
+    slug: "{{slug}}"
+    widget: list,
+    fields:
+      [
+        { label: Name, name: name, widget: string, required: true },
+        {
+          label: Description,
+          name: description,
+          widget: text,
+          required: false,
+        },
+        { label: Price, name: price, widget: number, required: false },
+      ]
+
+  - name: dish
+    label: Dish
+    folder: "src/content/dishes"
+    create: true 
+    slug: "{{slug}}"
+    widget: list,
+    fields:
+      [
+        { label: Name, name: name, widget: string, required: true },
+        { label: Description, name: description, widget: text },
+        { label: Price, name: price, widget: number },
+        {
+          label: Sides,
+          name: sidedishes,
+          widget: relation,
+          collection: side,
+          valueField: name,
+          searchFields: ["name"],
+          multiple: true,
+          required: false,
+        },
+      ]
+
+  - name: drink
+    label: Drink
+    folder: "src/content/drinks"
+    create: true 
+    slug: "{{slug}}"
+    widget: list,
+    fields:
+      [
+        { label: Name, name: name, widget: string, required: true },
+        {
+          label: Description,
+          name: description,
+          widget: text,
+          required: false,
+        },
+        { label: Price, name: price, widget: number },
+        { label: Type, name: type, widget: select, options: ["white wine", "red wine", "rose wine", "cocktail", "beer", "non-alcoholic"] }
+      ]

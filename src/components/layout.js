@@ -25,11 +25,11 @@ const Layout = ({ children }) => {
           // maxWidth: 960,
           // padding: `0px 1.0875rem 1.45rem`,
           paddingTop: 0,
-          minHeight: '100%'
+          minHeight: "100%",
         }}
       >
         <main>{children}</main>
-        <Footer/>
+        <Footer />
       </div>
     </>
   )
