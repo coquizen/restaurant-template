@@ -1,6 +1,6 @@
 ---
-name: "Lunch "
+name: Dinner
 hours:
-  - from: 11:06
-    to: 15:06
+  - from: 16:06
+    to: 22:06
 ---
