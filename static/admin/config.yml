@@ -1,17 +1,17 @@
 backend:
-  name: git-gateway
-  branch: master
+  name: github
+  repo: CaninoDev/restaurant-template.git-aaa
+
 media_folder: static/img
 public_folder: /img
 
 collections:
-- name: 'homePage'
-  label: 'Home Page'
-  files:
-    - file: 'src/content/landing-content.md'
-      label: 'Landing Page'
-      name: 'landingPage'
-      fields:
-        - { label: 'Landing Heading', name: landingHeading, widget: string }
-        - { label: 'Landing subtext', name: 'landingSubtext', widget: string }
-  
+  - name: "homePage"
+    label: "Home Page"
+    files:
+      - file: "src/content/landing-content.md"
+        label: "Landing Page"
+        name: "landingPage"
+        fields:
+          - { label: "Landing Heading", name: landingHeading, widget: string }
+          - { label: "Landing subtext", name: "landingSubtext", widget: string }
