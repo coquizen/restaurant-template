@@ -67,30 +67,22 @@ collections:
             [
               { label: Section, name: section, widget: string },
               {
-                label: "Food Items",
-                name: fooditem,
+                label: Content,
+                name: content,
                 widget: list,
                 types:
                   [
                     {
                       label: Dishes,
                       name: dishes,
-                      widget: list,
-                      collection: dish,
-                      valueField: name,
-                      searchFields: ["name"],
-                      multiple: true,
-                      required: false,
+                      widget: object,
+                      field: { label: Dish, name: selectdish, widget: relation, collection: dish, valueField: name, searchFields: ["name"], multiple: true, required: false },
                     },
                     {
                       label: Drinks,
                       name: drinks,
-                      widget: list,
-                      collection: drink,
-                      valueField: name,
-                      searchFields: ["name"],
-                      multiple: true,
-                      required: false,
+                      widget: object,
+                      field: { label: Dish, name: selectdish, widget: relation, collection: dish, valueField: name, searchFields: ["name"], multiple: true, required: false }
                     },
                   ],
               },
