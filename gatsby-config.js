@@ -20,10 +20,31 @@ module.exports = {
     {
       resolve: "gatsby-source-filesystem",
       options: {
-        path: `${__dirname}/src/content`,
+        path: `${__dirname}/src/content/pages`,
         name: "pages",
       },
     },
+    // {
+    //   resolve: "gatsby-source-filesystem",
+    //   options: {
+    //     path: `${__dirname}/src/content/menus`,
+    //     name: "menus",
+    //   },
+    // },
+    // {
+    //   resolve: "gatsby-source-filesystem",
+    //   options: {
+    //     path: `${__dirname}/src/content/drinks`,
+    //     name: "drinks",
+    //   },
+    // },
+    // {
+    //   resolve: "gatsby-source-filesystem",
+    //   options: {
+    //     path: `${__dirname}/src/content/dishes`,
+    //     name: "dishes",
+    //   },
+    // },
     `gatsby-transformer-sharp`,
     `gatsby-plugin-sharp`,
     `gatsby-plugin-styled-components`,
@@ -43,9 +64,9 @@ module.exports = {
     {
       resolve: "gatsby-source-stripe",
       options: {
-        objects: ["Sku"],
+        objects: ["Price", "Sku", "Product"],
         secretKey: process.env.STRIPE_SECRET_KEY,
-        downloadFiles: "none",
+        downloadFiles: true,
       },
     },
     {

@@ -24,7 +24,41 @@ const MenuPage = styled.div`
     }
   }
 `
-const Menu = () => {
+const sanitize = data => {
+  /*
+  nodes [
+    { node
+      {
+        product: {
+          description
+          id
+          metadata {
+            menu
+            section
+          }
+          name
+        }
+        unit_amount_decimal
+      }
+    }
+  ] 
+  */
+  var sanitizedData = [] 
+  data.map((nodes) => {
+    const { node } = nodes
+    sanitizedData.push({
+      id: node.product.id,
+      name: node.product.name,
+      description: node.product.description,
+      price: (node.unit_amount_decimal / 100),
+      menu: `${node.product.metadata.menu}`,
+      section: `${node.product.metadata.section}`
+    })
+  })
+  return sanitizedData  
+}
+
+const Menu = ({ data }) => {
   return (
     <Layout>
       <MenuPage>
@@ -35,10 +69,32 @@ const Menu = () => {
             src={menuCover}
           ></img>
         </section>
-        <MenuComponent />
+        <MenuComponent data={sanitize(data.allStripePrice.edges)} />
       </MenuPage>
     </Layout>
   )
 }
+
+export const query = graphql`
+  query products {
+    allStripePrice {
+      edges {
+        node {
+          product {
+            id
+            name
+            description
+            metadata {
+              menu
+              section
+            }
+          }
+          unit_amount_decimal
+          currency
+        }
+      }
+    }
+  }
+`
 
 export default Menu

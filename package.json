@@ -9,7 +9,9 @@
     "@fortawesome/free-brands-svg-icons": "^5.12.0",
     "@fortawesome/free-solid-svg-icons": "^5.12.0",
     "@fortawesome/react-fontawesome": "^0.1.8",
+    "@stripe/stripe-js": "^1.7.0",
     "babel-plugin-styled-components": "^1.10.6",
+    "dotenv": "^8.2.0",
     "gatsby": "^2.18.12",
     "gatsby-image": "^2.2.34",
     "gatsby-plugin-google-fonts": "^1.0.1",
@@ -31,7 +33,7 @@
     "react-slick": "^0.25.2",
     "react-svg": "^11.0.6",
     "slick-carousel": "^1.8.1",
-    "stripe": "^8.64.0",
+    "stripe": "^8.67.0",
     "styled-components": "^5.0.0"
   },
   "devDependencies": {

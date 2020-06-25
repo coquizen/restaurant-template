@@ -1,42 +1,67 @@
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 import styled from "styled-components"
+import { graphql } from "gatsby"
 
-const menuData = [
+
+const stripeSchema = []
+
+const menuData =
   {
-    price: "$25.99",
-    name: "Grilled Beef with potatoes",
-    description: "Meat / Potatoes / Rice / Tomatoes",
-  },
-  {
-    price: "$25.99",
-    name: "Grilled Beef with potatoes",
-    description: "Meat / Potatoes / Rice / Tomatoes",
-  },
-  {
-    price: "$25.99",
-    name: "Grilled Beef with potatoes",
-    description: "Meat / Potatoes / Rice / Tomatoes",
-  },
-  {
-    price: "$25.99",
-    name: "Grilled Beef with potatoes",
-    description: "Meat / Potatoes / Rice / Tomatoes",
-  },
-]
-const categories = [
-  {
-    title: "Main",
-    items: menuData,
-  },
-  {
-    title: "Desserts",
-    items: [menuData[0]],
-  },
-  {
-    title: "Drinks",
-    items: menuData,
-  },
-]
+    Salads: [
+      {
+        name: "Chef's Salad",
+        description:
+          "An American salad consisting of hard-boiled eggs; one or more varieties of meat, such as ham, turkey, chicken, or roast beef; tomatoes; cucumbers; and cheese; all placed upon a bed of tossed lettuce or other leaf vegetables.",
+        price: 12,
+      },
+      {
+        name: "Greek Salad",
+        description:
+          "heirloom tomato, cucumber, red onionfeta, kalamata olive, red wine vinaigrette",
+        price: 13,
+      },
+      {
+        name: "House Salad",
+        description:
+          "organic mesclun lettuce, carrot, red onion, celery, olive oil and vinegar",
+        price: 10,
+      },
+    ],
+    Dinner: [
+      {
+        name: "Spicy Shrimp Scampi",
+        description: "garlic, chili, herbs, focaccia",
+        price: 12,
+      },
+      {
+        name: "Truffle Fries",
+        description: "white truffle oil, parmesan",
+        price: 12,
+      },
+      {
+        name: "Chorizo Bacon Hash",
+        description: "dried chorizo, potato, red bell pepper",
+        price: 12,
+        sides: [
+          {
+            name: "red onion, fried egg",
+            price: 1,
+          },
+          {
+            name: "feta",
+            price: 1,
+          },
+          {
+            name: "avocado",
+            price: 3,
+          },
+        ],
+      },
+    ],
+  }
+
+const categories = Object.keys(menuData)
+
 const MenuStyles = styled.div`
   min-height: 100vh;
   padding-top: 40px;
@@ -117,9 +142,30 @@ const MenuStyles = styled.div`
     }
   }
 `
-const MenuComponent = () => {
-  const [currentCategory, setCurrentCategory] = useState(categories[0])
+const MenuComponent = ({ data }) => {
+  const categories = [...new Set(data.map(item => item.menu))]
 
+  const [currentCategory, setCurrentCategory] = useState(categories[0])
+  const [cart, setCart] = useState(stripeSchema)
+
+  const addToCart = (e, data) => {
+    const product = {
+      id: data.name,
+      currency: 'USD',
+      price: data.price,
+      attributes: {
+        name: data.name
+      },
+      quantity: 1,
+    }
+    
+    setCart([...cart, product])
+
+  }
+
+  const checkout = () => {
+
+  }
   return (
     <MenuStyles>
       <div className="menu-title-block">
@@ -131,21 +177,22 @@ const MenuComponent = () => {
       <div className="menu-category">
         <ul>
           {categories.map((category, index) => {
+            console.log(`category: ${category}, currentCategory: ${currentCategory}`)
             return (
               <li
                 key={index}
                 className={
-                  currentCategory.title === category.title ? "active" : ""
+                  currentCategory === category ? "active" : ""
                 }
               >
                 <a
-                  href={`#${category.title}`}
+                  href={`#${category}`}
                   onClick={e => {
                     e.preventDefault()
                     setCurrentCategory(category)
                   }}
                 >
-                  {category.title}
+                  {category}
                 </a>
               </li>
             )
@@ -153,12 +200,13 @@ const MenuComponent = () => {
         </ul>
       </div>
       <div className="menu-items-block">
-        {currentCategory.items.map((data, index) => {
+        {data.filter((item) => item.menu === currentCategory).map((data, index) => {
           return (
             <div className="menu-item" key={index}>
-              <p className="price">{data.price}</p>
+              <p className="price">${data.price}</p>
               <p className="name">{data.name}</p>
               <p className="description">{data.description}</p>
+              <button onClick={e => addToCart(e, data)}>add to cart</button>
             </div>
           )
         })}

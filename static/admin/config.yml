@@ -32,7 +32,7 @@ collections:
     label: Menu
     folder: "src/content/menus"
     create: true
-    slug: "{{slug}}"
+    slug: "{{name}}"
     fields:
       - { label: Name, name: name, widget: string }
       - { label: Description, name: description, widget: text, required: false }
@@ -76,13 +76,33 @@ collections:
                       label: Dishes,
                       name: dishes,
                       widget: object,
-                      field: { label: Dish, name: selectdish, widget: relation, collection: dish, valueField: name, searchFields: ["name"], multiple: true, required: false },
+                      field:
+                        {
+                          label: Dish,
+                          name: selectdish,
+                          widget: relation,
+                          collection: dish,
+                          valueField: name,
+                          searchFields: ["name"],
+                          multiple: true,
+                          required: false,
+                        },
                     },
                     {
                       label: Drinks,
                       name: drinks,
                       widget: object,
-                      field: { label: Dish, name: selectdish, widget: relation, collection: dish, valueField: name, searchFields: ["name"], multiple: true, required: false }
+                      field:
+                        {
+                          label: Dish,
+                          name: selectdish,
+                          widget: relation,
+                          collection: dish,
+                          valueField: name,
+                          searchFields: ["name"],
+                          multiple: true,
+                          required: false,
+                        },
                     },
                   ],
               },
@@ -92,8 +112,8 @@ collections:
   - name: side
     label: "Side Dish"
     folder: "src/content/sides"
-    create: true 
-    slug: "{{slug}}"
+    create: true
+    slug: "{{name}}"
     widget: list,
     fields:
       [
@@ -110,8 +130,8 @@ collections:
   - name: dish
     label: Dish
     folder: "src/content/dishes"
-    create: true 
-    slug: "{{slug}}"
+    create: true
+    slug: "{{name}}"
     widget: list,
     fields:
       [
@@ -133,8 +153,8 @@ collections:
   - name: drink
     label: Drink
     folder: "src/content/drinks"
-    create: true 
-    slug: "{{slug}}"
+    create: true
+    slug: "{{name}}"
     widget: list,
     fields:
       [
@@ -146,5 +166,18 @@ collections:
           required: false,
         },
         { label: Price, name: price, widget: number },
-        { label: Type, name: type, widget: select, options: ["white wine", "red wine", "rose wine", "cocktail", "beer", "non-alcoholic"] }
+        {
+          label: Type,
+          name: type,
+          widget: select,
+          options:
+            [
+              "white wine",
+              "red wine",
+              "rose wine",
+              "cocktail",
+              "beer",
+              "non-alcoholic",
+            ],
+        },
       ]
