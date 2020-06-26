@@ -1,66 +1,87 @@
 import React, { useState, useEffect } from "react"
 import styled from "styled-components"
-import { graphql } from "gatsby"
+import { graphql } from 'gatsby'
 
-
-const stripeSchema = []
-
-const menuData =
+const stripeSchema = [
   {
-    Salads: [
-      {
-        name: "Chef's Salad",
-        description:
-          "An American salad consisting of hard-boiled eggs; one or more varieties of meat, such as ham, turkey, chicken, or roast beef; tomatoes; cucumbers; and cheese; all placed upon a bed of tossed lettuce or other leaf vegetables.",
-        price: 12,
-      },
-      {
-        name: "Greek Salad",
-        description:
-          "heirloom tomato, cucumber, red onionfeta, kalamata olive, red wine vinaigrette",
-        price: 13,
-      },
-      {
-        name: "House Salad",
-        description:
-          "organic mesclun lettuce, carrot, red onion, celery, olive oil and vinegar",
-        price: 10,
-      },
-    ],
-    Dinner: [
-      {
-        name: "Spicy Shrimp Scampi",
-        description: "garlic, chili, herbs, focaccia",
-        price: 12,
-      },
-      {
-        name: "Truffle Fries",
-        description: "white truffle oil, parmesan",
-        price: 12,
-      },
-      {
-        name: "Chorizo Bacon Hash",
-        description: "dried chorizo, potato, red bell pepper",
-        price: 12,
-        sides: [
-          {
-            name: "red onion, fried egg",
-            price: 1,
-          },
-          {
-            name: "feta",
-            price: 1,
-          },
-          {
-            name: "avocado",
-            price: 3,
-          },
-        ],
-      },
-    ],
-  }
+    id: "",
+    name: "",
+    menu: "",
+    section: "",
+    description: "",
+    price: "",
+  },
+]
 
-const categories = Object.keys(menuData)
+const menuData = {
+  data: {
+    allStripePrice: {
+      edges: [
+        {
+          node: {
+            product: {
+              id: "prod_HX3vxAh3hx1mqM",
+              name: "Truffle Fries",
+              description: "truffle oil, salt, pepper",
+              metadata: {
+                menu: "dinner",
+                section: "little plates",
+              },
+            },
+            unit_amount_decimal: "500",
+            currency: "usd",
+          },
+        },
+        {
+          node: {
+            product: {
+              id: "prod_HX1j39wpJAfs3C",
+              name: "Spicy Shrimp Scampi",
+              description: "garlic, chili, herbs, focaccia",
+              metadata: {
+                menu: "dinner",
+                section: "little plates",
+              },
+            },
+            unit_amount_decimal: "2000",
+            currency: "usd",
+          },
+        },
+        {
+          node: {
+            product: {
+              id: "prod_HX1VvyzfT1uttk",
+              name: "Greek's Salad",
+              description: null,
+              metadata: {
+                menu: "salads",
+                section: "small plates",
+              },
+            },
+            unit_amount_decimal: "1000",
+            currency: "usd",
+          },
+        },
+        {
+          node: {
+            product: {
+              id: "prod_HX1V0tioG1Owdz",
+              name: "Chef's Salad",
+              description: null,
+              metadata: {
+                menu: "dinner",
+                section: "salad",
+              },
+            },
+            unit_amount_decimal: "1100",
+            currency: "usd",
+          },
+        },
+      ],
+    },
+  },
+}
+// const categories = Object.keys(menuData)
 
 const MenuStyles = styled.div`
   min-height: 100vh;
@@ -142,77 +163,76 @@ const MenuStyles = styled.div`
     }
   }
 `
-const MenuComponent = ({ data }) => {
-  const categories = [...new Set(data.map(item => item.menu))]
-
+const MenuComponent = props => {
+  const categories = [...new Set(props.data.map(item => item.menu))]
   const [currentCategory, setCurrentCategory] = useState(categories[0])
   const [cart, setCart] = useState(stripeSchema)
 
-  const addToCart = (e, data) => {
-    const product = {
-      id: data.name,
-      currency: 'USD',
-      price: data.price,
-      attributes: {
-        name: data.name
-      },
-      quantity: 1,
+    const addToCart = (e, datum) => {
+      const product = {
+        id: datum.name,
+        currency: "USD",
+        price: datum.price,
+        attributes: {
+          name: datum.name,
+        },
+        quantity: 1,
+      }
+
+      setCart([...cart, product])
     }
-    
-    setCart([...cart, product])
 
-  }
-
-  const checkout = () => {
-
-  }
-  return (
-    <MenuStyles>
-      <div className="menu-title-block">
-        <h2 className="menu-title">Our Delicious Menu</h2>
-        <p>
-          You have to enjoy the best food that money can buy all over the world
-        </p>
-      </div>
-      <div className="menu-category">
-        <ul>
-          {categories.map((category, index) => {
-            console.log(`category: ${category}, currentCategory: ${currentCategory}`)
-            return (
-              <li
-                key={index}
-                className={
-                  currentCategory === category ? "active" : ""
-                }
-              >
-                <a
-                  href={`#${category}`}
-                  onClick={e => {
-                    e.preventDefault()
-                    setCurrentCategory(category)
-                  }}
+    const checkout = () => {}
+    return (
+      <MenuStyles>
+        <div className="menu-title-block">
+          <h2 className="menu-title">Our Delicious Menu</h2>
+          <p>
+            You have to enjoy the best food that money can buy all over the
+            world
+          </p>
+        </div>
+        <div className="menu-category">
+          <ul>
+            {categories.map((category, index) => {
+              console.log(
+                `category: ${category}, currentCategory: ${currentCategory}`
+              )
+              return (
+                <li
+                  key={index}
+                  className={currentCategory === category ? "active" : ""}
                 >
-                  {category}
-                </a>
-              </li>
-            )
-          })}
-        </ul>
-      </div>
-      <div className="menu-items-block">
-        {data.filter((item) => item.menu === currentCategory).map((data, index) => {
-          return (
-            <div className="menu-item" key={index}>
-              <p className="price">${data.price}</p>
-              <p className="name">{data.name}</p>
-              <p className="description">{data.description}</p>
-              <button onClick={e => addToCart(e, data)}>add to cart</button>
-            </div>
-          )
-        })}
-      </div>
-    </MenuStyles>
-  )
+                  <a
+                    href={`#${category}`}
+                    onClick={e => {
+                      e.preventDefault()
+                      setCurrentCategory(category)
+                    }}
+                  >
+                    {category}
+                  </a>
+                </li>
+              )
+            })}
+          </ul>
+        </div>
+        <div className="menu-items-block">
+          {props.data
+            .filter(item => item.menu === currentCategory)
+            .map((data, index) => {
+              return (
+                <div className="menu-item" key={index}>
+                  <p className="price">${data.price}</p>
+                  <p className="name">{data.name}</p>
+                  <p className="description">{data.description}</p>
+                  <button onClick={e => addToCart(e, data)}>add to cart</button>
+                </div>
+              )
+            })}
+        </div>
+      </MenuStyles>
+    )
 }
 
 export default MenuComponent

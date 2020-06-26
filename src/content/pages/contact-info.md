@@ -1,7 +1,7 @@
 ---
-name: Queen's Room 
+name: Queen's Room
 address1: 3602 Ditmars Blvd
-address2: 
+address2:
 city: Queens
 state: NY
 zipCode: 11105
