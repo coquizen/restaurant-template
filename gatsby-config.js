@@ -1,7 +1,11 @@
+require("dotenv").config({
+  path: `.env.${process.env.NODE_ENV}`,
+})
+
 module.exports = {
   siteMetadata: {
-    title: `Gatsby Default Starter`,
-    description: `Kick off your next, great Gatsby project with this default starter. This barebones starter ships with the main Gatsby configuration files you might need.`,
+    title: `Restaurant eCommerce Site`,
+    description: ``,
     author: `@gatsbyjs`,
   },
   plugins: [
@@ -14,10 +18,10 @@ module.exports = {
       },
     },
     {
-      resolve: 'gatsby-source-filesystem',
+      resolve: "gatsby-source-filesystem",
       options: {
-        path: `${__dirname}/src/content`,
-        name: 'pages',
+        path: `${__dirname}/src/content/pages`,
+        name: "pages",
       },
     },
     `gatsby-transformer-sharp`,
@@ -37,14 +41,19 @@ module.exports = {
       },
     },
     {
+      resolve: "gatsby-source-stripe",
+      options: {
+        objects: ["Price", "Sku", "Product"],
+        secretKey: process.env.STRIPE_SECRET_KEY,
+        downloadFiles: true,
+      },
+    },
+    {
       resolve: `gatsby-plugin-google-fonts`,
       options: {
-        fonts: [
-          `Lora`,
-          `Poppins`
-        ],
-        display: 'swap'
-      }
+        fonts: [`Lora`, `Poppins`],
+        display: "swap",
+      },
     },
     `gatsby-plugin-netlify-cms`,
     // this (optional) plugin enables Progressive Web App + Offline functionality
