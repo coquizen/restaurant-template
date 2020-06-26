@@ -3,7 +3,7 @@ import MenuComponent from "../components/menu"
 import Layout from "../components/layout"
 import menuCover from "../images/menucover.jpg"
 import styled from "styled-components"
-import { graphql } from 'gatsby'
+import { graphql } from "gatsby"
 
 const MenuPage = styled.div`
   .menu-cover {
@@ -97,7 +97,6 @@ const menuData = {
 
 const sanitize = data => {
   var sanitizedData = []
-  console.log(data)
   data.map(nodes => {
     const { node } = nodes
     sanitizedData.push({
