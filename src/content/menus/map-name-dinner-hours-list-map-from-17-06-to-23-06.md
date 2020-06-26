@@ -8,8 +8,6 @@ sections:
         selectdish:
           - Chef's Salad
           - House Salad
-    sectionsides:
-      - bacon
-      - fried egg
-      - avocado
+          - Spring Watercress Salad
+          - Greek Salad
 ---
