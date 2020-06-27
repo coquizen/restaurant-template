@@ -2,8 +2,6 @@ import React from "react"
 import { Link, graphql } from "gatsby"
 
 import Layout from "../components/layout"
-import Image from "../components/image"
-import SEO from "../components/seo"
 import styled from "styled-components"
 import landingImg from "../images/landingimage.jpg"
 import MenuComponent from "../components/menu"
@@ -19,6 +17,15 @@ import Reviews from "../components/reviews"
 
 const IndexPage = props => {
   const landingContent = props.data.landingContent.frontmatter
+  const {
+    name,
+    address1,
+    city,
+    state,
+    zipcode,
+    email,
+    telephone,
+  } = props.data.contactInfo.frontmatter
 
   return (
     <Layout>
@@ -36,7 +43,9 @@ const IndexPage = props => {
           <div className="res-info-item">
             <FontAwesomeIcon icon={faMapMarkerAlt} />
             <h3 className="title">Address</h3>
-            <p>98 West 21th Street, Suite 721 New York NY 10016</p>
+            <p>
+              `${address1} ${city}, ${state} ${zipcode}`
+            </p>
           </div>
           <div className="res-info-item">
             <FontAwesomeIcon icon={faClock} />
@@ -46,17 +55,17 @@ const IndexPage = props => {
           <div className="res-info-item">
             <FontAwesomeIcon icon={faPhone} />
             <h3 className="title">Phone</h3>
-            <p>+ 001 234 567 + 001 234 567</p>
+            <p>{telephone}</p>
           </div>
           <div className="res-info-item">
             <FontAwesomeIcon icon={faEnvelope} />
             <h3 className="title">Email</h3>
-            <p>info@domain.com luto@email.com</p>
+            <p>{email}</p>
           </div>
         </div>
         <AboutSection>
           <div className="text-section">
-            <h3>Welcome to Alo Vietnam</h3>
+            <h3>`Welcome to ${name}`</h3>
             <h2>Authenthic taste of Vietnam in Herndon</h2>
             <p>
               Far far away, behind the word mountains, far from the countries
@@ -209,6 +218,19 @@ export const query = graphql`
       frontmatter {
         landingHeading
         landingSubtext
+      }
+    }
+    contactInfo: markdownRemark(
+      fileAbsolutePath: { regex: "/contact-info.md/" }
+    ) {
+      frontmatter {
+        name
+        address1
+        city
+        state
+        zipcode
+        email
+        telephone
       }
     }
   }

@@ -10,3 +10,6 @@
   for = "/*"
     [headers.values]
     Access-Control-Allow-Origin = "*"
+# define where the functions will be
+[build]
+  functions = "functions/"

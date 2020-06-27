@@ -9,13 +9,13 @@ collections:
   - name: "page"
     label: "Pages"
     files:
-      - file: "src/content/landing-content.md"
+      - file: "src/content/pages/landing-content.md"
         label: "Landing Page"
         name: "landingPage"
         fields:
           - { label: Heading, name: heading, widget: string }
           - { label: Subtext, name: subtext, widget: text }
-      - file: "src/content/contact-info.md"
+      - file: "src/content/pages/contact-info.md"
         label: "Contact Info Page"
         name: "contactpage"
         fields:
@@ -24,9 +24,9 @@ collections:
           - { label: Address2, name: address2, widget: string }
           - { label: City, name: city, widget: string }
           - { label: State, name: state, widget: string }
-          - { label: ZipCode, name: zipCode, widget: number }
-          - { label: eMail, name: eMail, widget: string }
-          - { label: "Telephone Number", name: telphone, widget: string }
+          - { label: ZipCode, name: zipcode, widget: number }
+          - { label: eMail, name: email, widget: string }
+          - { label: "Telephone Number", name: telephone, widget: string }
 
   - name: menus
     label: Menu

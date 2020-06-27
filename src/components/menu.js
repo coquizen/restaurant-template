@@ -1,92 +1,44 @@
-import React, { useState, useEffect } from "react"
+import React, { useState, useContext } from "react"
 import styled from "styled-components"
-import { graphql } from 'gatsby'
-
-const stripeSchema = [
-  {
-    id: "",
-    name: "",
-    menu: "",
-    section: "",
-    description: "",
-    price: "",
-  },
-]
-
-const menuData = {
-  data: {
-    allStripePrice: {
-      edges: [
-        {
-          node: {
-            product: {
-              id: "prod_HX3vxAh3hx1mqM",
-              name: "Truffle Fries",
-              description: "truffle oil, salt, pepper",
-              metadata: {
-                menu: "dinner",
-                section: "little plates",
-              },
-            },
-            unit_amount_decimal: "500",
-            currency: "usd",
-          },
-        },
-        {
-          node: {
-            product: {
-              id: "prod_HX1j39wpJAfs3C",
-              name: "Spicy Shrimp Scampi",
-              description: "garlic, chili, herbs, focaccia",
-              metadata: {
-                menu: "dinner",
-                section: "little plates",
-              },
-            },
-            unit_amount_decimal: "2000",
-            currency: "usd",
-          },
-        },
-        {
-          node: {
-            product: {
-              id: "prod_HX1VvyzfT1uttk",
-              name: "Greek's Salad",
-              description: null,
-              metadata: {
-                menu: "salads",
-                section: "small plates",
-              },
-            },
-            unit_amount_decimal: "1000",
-            currency: "usd",
-          },
-        },
-        {
-          node: {
-            product: {
-              id: "prod_HX1V0tioG1Owdz",
-              name: "Chef's Salad",
-              description: null,
-              metadata: {
-                menu: "dinner",
-                section: "salad",
-              },
-            },
-            unit_amount_decimal: "1100",
-            currency: "usd",
-          },
-        },
-      ],
-    },
-  },
-}
-// const categories = Object.keys(menuData)
+import {
+  ProductsProvider,
+  ProductsContext,
+} from "../components/productprovider"
 
 const MenuStyles = styled.div`
   min-height: 100vh;
   padding-top: 40px;
   color: #404044;
+
+  .container {
+    cursor: pointer;
+    position: relative;
+    &:hover {
+      border-style: outset;
+      border-width: 1px;
+      box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14),
+        0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
+      transition: box-shadow 0.48s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+  }
+  .container-counter,
+  .container-overlay {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+  .container-overlay {
+    z-index: 10;
+  }
+  .container-ordered {
+    border-style: inset;
+    border-width: 1px;
+    box-shadow: 0 -2px -2px 0 rgba(0, 0, 0, 0.14),
+      0 -1px -5px 0 rgba(0, 0, 0, 0.12), 0 -3px -1px 2px rgba(0, 0, 0, 0.2);
+    transition: box-shadow 0.48s cubic-bezier(0.4, 0, 0.2, 1);
+  }
   .menu-title-block {
     text-align: center;
     .menu-title {
@@ -105,14 +57,14 @@ const MenuStyles = styled.div`
       margin: 0px;
     }
     .name {
-      margin: 10px 0 10px 0;
+      margin: 16px 0 6px 0;
       font-size: 16px;
       font-weight: 700;
     }
     .description {
       color: #7d7d7d;
       font-size: 14px;
-      margin-bottom: 1.5em;
+      margin-bottom: 1em;
       font-weight: 400;
       font-family: "Poppins", Arial, sans-serif;
     }
@@ -162,77 +114,192 @@ const MenuStyles = styled.div`
       }
     }
   }
-`
-const MenuComponent = props => {
-  const categories = [...new Set(props.data.map(item => item.menu))]
-  const [currentCategory, setCurrentCategory] = useState(categories[0])
-  const [cart, setCart] = useState(stripeSchema)
-
-    const addToCart = (e, datum) => {
-      const product = {
-        id: datum.name,
-        currency: "USD",
-        price: datum.price,
-        attributes: {
-          name: datum.name,
-        },
-        quantity: 1,
-      }
-
-      setCart([...cart, product])
+    .cards-list {
+      z-index: 0;
+      width: 100%;
+      display: flex;
+      justify-content: space-around;
+      flex-wrap: wrap;
     }
 
-    const checkout = () => {}
-    return (
-      <MenuStyles>
-        <div className="menu-title-block">
-          <h2 className="menu-title">Our Delicious Menu</h2>
-          <p>
-            You have to enjoy the best food that money can buy all over the
-            world
-          </p>
-        </div>
-        <div className="menu-category">
-          <ul>
-            {categories.map((category, index) => {
-              console.log(
-                `category: ${category}, currentCategory: ${currentCategory}`
-              )
-              return (
-                <li
-                  key={index}
-                  className={currentCategory === category ? "active" : ""}
+    .card {
+      cursor: pointer;
+      background-color: #92a8d1;
+      margin: 30px auto;
+      width: 450px;
+      height: 300px;
+      border-radius: 40px;
+      box-shadow: 5px 5px 30px 7px rgba(0, 0, 0, 0.25),
+        -5px -5px 30px 7px rgba(0, 0, 0, 0.22);
+      transition: 0.4s;
+      .card_container {
+        width: inherit;
+        height: inherit;
+        order-radius: 40px;
+        cursor: pointer;
+    }
+    .card_title {
+        text-align: center;
+        border-radius: 0px 0px 40px 40px;
+        font-family: sans-serif;
+        font-weight: bold;
+        font-size: 30px;
+        margin-top: -80px;
+        height: 40px;
+    }
+    .card_price {
+        text-align: center;
+        border-radius: 0px 0px 40px 40px;
+        font-family: sans-serif;
+        font-weight: italic;
+        font-size: 25px;
+        margin-top: -80px;
+        height: 35px;
+    }
+    .card_body {
+      text-align: center;
+      border-radius: 0px 0px 40px 40px;
+      font-family: sans-serif;
+      font-weight: normal;
+      font-size: 20px;
+      margin-top: -80px;
+      height: 30px;
+    }
+    :hover {
+      transform: scale(0.9, 0.9);
+      box-shadow: 5px 5px 30px 15px rgba(0, 0, 0, 0.25),
+        -5px -5px 30px 15px rgba(0, 0, 0, 0.22);
+    }
+    }
+
+    .title-white {
+      color: white;
+    }
+
+    .title-black {
+      color: black;
+    }
+
+    @media all and (max-width: 500px) {
+      .card-list {
+        /* On small screens, we are no longer using row direction but column */
+        flex-direction: column;
+      }
+    }
+    .Product {
+      border: 1px solid #eee;
+      margin: 1rem 0;
+      padding: 1rem;
+    }
+
+    @media (min-width: 800px) {
+      .Product {
+        margin: 0 1rem;
+        width: 33.3333%;
+      }
+    }
+
+    .Product-title {
+      font-size: 16px;
+    }
+
+    .Product-price {
+      margin-bottom: 1rem;
+    }
+
+    .Product-buy-button {
+      display: inline-block;
+      margin: 0 0 1rem 0;
+      padding: 0.85em 1em;
+      border: 0;
+      outline: 0;
+      border-radius: 100em;
+      font-size: 0.9rem;
+      font-weight: 600;
+      line-height: 1;
+      text-align: center;
+      background-color: #61dafb;
+      color: #fff;
+      cursor: pointer;
+      transition-property: backgroun
+      d-color, color;
+      transition-duration: 0.25s;
+      transition-timing-function: ease-out;
+      -webkit-appearance: none;
+    }
+
+    .Product-buy-button:hover,
+    .Product-buy-button:focus {
+      background-color: #47b8d7;
+    }
+
+  }
+`
+const MenuComponent = () => {
+  const { products } = useContext(ProductsContext)
+
+  console.log(`We are here in menucomponent: ${Object.keys(products)}`)
+  const categories = [...new Set(products.map(item => item.menu))]
+  const [currentCategory, setCurrentCategory] = useState(categories[0])
+  const [buttonActive, setButtonActive] = useState(null)
+
+  const selected = e => {
+    setButtonActive(e.target.id)
+  }
+
+  return (
+    <MenuStyles>
+      <div className="menu-title-block">
+        <h2 className="menu-title">Our Delicious Menu</h2>
+        <p>
+          You have to enjoy the best food that money can buy all over the world
+        </p>
+      </div>
+      <div className="menu-category">
+        <ul>
+          {categories.map((category, index) => {
+            console.log(
+              `category: ${category}, currentCategory: ${currentCategory}`
+            )
+            return (
+              <li
+                key={index}
+                className={currentCategory === category ? "active" : ""}
+              >
+                <a
+                  href={`#${category}`}
+                  onClick={e => {
+                    e.preventDefault()
+                    setCurrentCategory(category)
+                  }}
                 >
-                  <a
-                    href={`#${category}`}
-                    onClick={e => {
-                      e.preventDefault()
-                      setCurrentCategory(category)
-                    }}
-                  >
-                    {category}
-                  </a>
-                </li>
-              )
-            })}
-          </ul>
-        </div>
-        <div className="menu-items-block">
-          {props.data
-            .filter(item => item.menu === currentCategory)
-            .map((data, index) => {
-              return (
-                <div className="menu-item" key={index}>
-                  <p className="price">${data.price}</p>
-                  <p className="name">{data.name}</p>
-                  <p className="description">{data.description}</p>
-                  <button onClick={e => addToCart(e, data)}>add to cart</button>
-                </div>
-              )
-            })}
-        </div>
-      </MenuStyles>
-    )
+                  {category}
+                </a>
+              </li>
+            )
+          })}
+        </ul>
+      </div>
+      <div className="cards-list">
+        {products
+          .filter(item => item.menu === currentCategory)
+          .map(data => (
+            <div className="Product" key={data.id}>
+              <div className="Product_title">
+                <p>{data.name}</p>
+              </div>
+              <div className="Product_price">
+                <p>{data.price}</p>
+              </div>
+              <div className="card_body">
+                <p>{data.description}</p>
+              </div>
+              <button className="Product_buy_button">Add to Cart</button>
+            </div>
+          ))}
+      </div>
+    </MenuStyles>
+  )
 }
 
 export default MenuComponent
