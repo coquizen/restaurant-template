@@ -71,20 +71,24 @@ Provider.propTypes = {
 
 /** Normalize structure of data sourced from Gatsby's GraphQL store */
 const processGatsbyData = data => {
-  var sanitizedData = []
-  console.log(data)
+  var sanitizedData = {}
+  let section
   data.map(nodes => {
     const { node } = nodes
-    sanitizedData.push({
+    if ((`${node.product.metadata.section}`) === undefined) {
+      section = null
+    } else {
+      section = `${node.product.metadata.section}`
+    }
+    sanitizedData[node.product.id] = {
       id: node.product.id,
       name: node.product.name,
-      description: node.product.description,
-      price: node.unit_amount_decimal / 100,
-      menu: `${node.product.metadata.menu}`,
-      section: `${node.product.metadata.section}`,
-    })
+      description: node.product.description && `${node.product.description}`,
+      price:  node.unit_amount_decimal && `${node.unit_amount_decimal / 100}`,
+      menu: node.product.metadata.menu && `${node.product.metadata.menu}`,
+      section
+    }
   })
-
   return sanitizedData
 }
 

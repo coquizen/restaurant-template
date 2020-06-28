@@ -1,14 +1,13 @@
-import React, { useState, useContext, useEffect } from "react"
+import React, { useState, useContext, useEffect, createContext } from "react"
 import PropTypes from "prop-types"
 import { ProductsContext } from "./productprovider"
 
-export const CartContext = React.createContext()
+export const CartContext = createContext()
 
 /**
  * Manages the shopping cart, which is persisted in local storage.
  * The cart and related methods are shared through context.
  */
-
 const CartProvider = ({ children }) => {
   const { products } = useContext(ProductsContext)
   const [mode, setMode] = useState(false)
@@ -43,22 +42,18 @@ const CartProvider = ({ children }) => {
   const count = contents.reduce((sum, [_, quantity]) => sum + quantity, 0)
 
   /** The total cost of the items in the cart */
-  const total = contents.reduce(
-    (sum, [id, quantity]) => sum + products[id].price * quantity,
-    0
-  )
-
+  const total = contents.reduce( (sum, [id, quantity]) => (sum + products[id].price * quantity, 0))
+  
   /** Sets quantity of item with `id` */
+  
   function set(id, quantity) {
-    if (!available(id)) return
-
     const index = contents.findIndex(item => item[0] === id)
     setContents(state => {
       const newState = [...state]
       if (index !== -1) {
         newState[index] = [id, quantity]
       } else {
-        newState.push([id, quantity])
+        newState.push([ id, quantity ])
       }
       return newState
     })
@@ -78,25 +73,6 @@ const CartProvider = ({ children }) => {
     })
   }
 
-  /** Returns true if `quantity` of item with `id` is available for purchase */
-  function available(id, quantity = 1) {
-    const product = products[id]
-    if (!product) {
-      console.error(`Dish with id ${id} not found`)
-      return false
-    } else if (!product.active) {
-      return false
-    } else if (product.inventory.type === "infinite") {
-      return true
-    } else if (product.inventory.type === "bucket") {
-      return ["in_stock", "limited"].includes(product.inventory.type)
-    } else if (product.inventory.type === "finite") {
-      return product.inventory.quantity >= quantity
-    } else {
-      return false
-    }
-  }
-
   /** Toggles cart display, or sets to the boolean `force` if provided */
   function toggle(force) {
     setMode(prev => force || !prev)
@@ -108,15 +84,14 @@ const CartProvider = ({ children }) => {
     add,
     set,
     remove,
-    available,
     toggle,
-    count,
     total,
+    count,
     mode,
   }
 
   return (
-    <CartContext.Provider value={{ ...ctx }}>{children}</CartContext.Provider>
+    <CartContext.Provider value={{...ctx}}>{children}</CartContext.Provider>
   )
 }
 

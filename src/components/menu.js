@@ -1,9 +1,8 @@
 import React, { useState, useContext } from "react"
 import styled from "styled-components"
-import {
-  ProductsProvider,
-  ProductsContext,
-} from "../components/productprovider"
+import { ProductsContext } from "../components/productprovider"
+import { CartContext } from "../components/cartprovider"
+import ShoppingCart from './shoppingcart'
 
 const MenuStyles = styled.div`
   min-height: 100vh;
@@ -237,16 +236,17 @@ const MenuStyles = styled.div`
 `
 const MenuComponent = () => {
   const { products } = useContext(ProductsContext)
-
-  console.log(`We are here in menucomponent: ${Object.keys(products)}`)
-  const categories = [...new Set(products.map(item => item.menu))]
+  const {add, cart} = useContext(CartContext)
+  const categories = [...new Set(Object.keys(products).map(i => products[i].menu) )]
   const [currentCategory, setCurrentCategory] = useState(categories[0])
   const [buttonActive, setButtonActive] = useState(null)
 
+  // const add = () => {}
   const selected = e => {
     setButtonActive(e.target.id)
   }
 
+  const productsArray = Object.keys(products).map(id => products[id])
   return (
     <MenuStyles>
       <div className="menu-title-block">
@@ -258,12 +258,9 @@ const MenuComponent = () => {
       <div className="menu-category">
         <ul>
           {categories.map((category, index) => {
-            console.log(
-              `category: ${category}, currentCategory: ${currentCategory}`
-            )
             return (
               <li
-                key={index}
+                key={category}
                 className={currentCategory === category ? "active" : ""}
               >
                 <a
@@ -281,23 +278,28 @@ const MenuComponent = () => {
         </ul>
       </div>
       <div className="cards-list">
-        {products
-          .filter(item => item.menu === currentCategory)
+        {productsArray.filter(item => item.menu === currentCategory)
           .map(data => (
             <div className="Product" key={data.id}>
               <div className="Product_title">
                 <p>{data.name}</p>
               </div>
               <div className="Product_price">
-                <p>{data.price}</p>
+                <p>${data.price}</p>
               </div>
               <div className="card_body">
                 <p>{data.description}</p>
               </div>
-              <button className="Product_buy_button">Add to Cart</button>
+              <button
+                className="Product_buy_button"
+                onClick={() => add(data.id, 1)}
+              >
+                Add to Cart
+              </button>
             </div>
           ))}
       </div>
+      <ShoppingCart cart={cart} products={products} />
     </MenuStyles>
   )
 }
