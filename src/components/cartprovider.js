@@ -11,7 +11,6 @@ export const CartContext = createContext()
 const CartProvider = ({ children }) => {
   const { products } = useContext(ProductsContext)
   const [mode, setMode] = useState(false)
-
   /** Load cart from local storage. Initialize if not present or incorrect. */
   const [contents, setContents] = useState(() => {
     let localCart
@@ -42,7 +41,13 @@ const CartProvider = ({ children }) => {
   const count = contents.reduce((sum, [_, quantity]) => sum + quantity, 0)
 
   /** The total cost of the items in the cart */
-  const total = contents.reduce( (sum, [id, quantity]) => (sum + products[id].price * quantity, 0))
+  const total = () => {
+    try {
+      return contents.reduce((sum, [id, quantity]) => (sum + products[id].price * quantity, 0))
+    } catch (e) {
+      console.log(e.message)
+    }
+  }
   
   /** Sets quantity of item with `id` */
   
@@ -64,6 +69,7 @@ const CartProvider = ({ children }) => {
     const currentItem = contents.find(item => item[0] === id)
     const currentQuantity = currentItem ? currentItem[1] : 0
     set(id, quantity + currentQuantity)
+    debugger
   }
 
   /** Removes item with `id` */

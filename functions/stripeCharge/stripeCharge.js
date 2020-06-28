@@ -8,7 +8,8 @@ const headers = {
   'Access-Control-Allow-Headers': 'Content-Type',
 }
 
-exports.handler = function(event, context, callback) {
+exports.handler = function (event, context, callback) {
+  
   //-- We only care to do anything if this is our POST request.
   if (event.httpMethod !== 'POST' || !event.body) {
     callback(null, {
@@ -19,6 +20,7 @@ exports.handler = function(event, context, callback) {
   }
 
   //-- Parse the body contents into an object.
+  console.log(event.body)
   const data = JSON.parse(event.body)
 
   //-- Make sure we have all required data. Otherwise, escape.
@@ -34,29 +36,37 @@ exports.handler = function(event, context, callback) {
     return
   }
 
-  stripe.charges.create(
-    {
-      currency: 'usd',
-      amount: data.amount,
-      source: data.token.id,
-      receipt_email: data.token.email,
-      description: `charge for a widget`,
-    },
-    {
-      idempotency_key: data.idempotency_key,
-    },
-    (err, charge) => {
-      if (err !== null) {
-        console.log(err)
-      }
 
-      let status = charge === null || charge.status !== 'succeeded' ? 'failed' : charge.status
+const session = await stripe.checkout.sessions.create({
+  payment_method_types: ['card', 'ideal'],
+  line_items: data,
+  mode: 'payment',
+  success_url: 'https://localhost:8000',
+  cancel_url: 'https://localhost:8000/404',
+});
+  // stripe.charges.create(
+  //   {
+  //     currency: 'usd',
+  //     amount: data.amount,
+  //     source: data.token.id,
+  //     receipt_email: data.token.email,
+  //     description: `charge for a widget`,
+  //   },
+  //   {
+  //     idempotency_key: data.idempotency_key,
+  //   },
+  //   (err, charge) => {
+  //     if (err !== null) {
+  //       console.log(err)
+  //     }
 
-      callback(null, {
-        statusCode,
-        headers,
-        body: JSON.stringify({ status }),
-      })
-    }
-  )
+  //     let status = charge === null || charge.status !== 'succeeded' ? 'failed' : charge.status
+
+  //     callback(null, {
+  //       statusCode,
+  //       headers,
+  //       body: JSON.stringify({ status }),
+  //     })
+  //   }
+  // )
 }
