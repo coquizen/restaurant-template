@@ -4,6 +4,7 @@ import Checkout from "./checkout"
 
 const Cart = () => {
   const { cart, count, mode, toggle } = useContext(CartContext)
+  console.log(cart)
   return (
     <>
       <button
@@ -32,9 +33,9 @@ const Cart = () => {
         }}
       >
         <h1>cart</h1>
-              {count > 0 &&
-                  cart.map(([product, quantity]) => (
-                      <p>{`${quantity} * ${product.name} `}</p>
+        {count > 0 &&
+          cart.map(([product, quantity]) => (
+            <p>{`${quantity} ${product.name}     $ ${product.price} `}</p>
           ))}
         {count === 0 && <span>No items in cart.</span>}
         {count > 0 && <Checkout />}

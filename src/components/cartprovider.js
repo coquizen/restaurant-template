@@ -9,6 +9,7 @@ export const CartContext = createContext()
  * The cart and related methods are shared through context.
  */
 const CartProvider = ({ children }) => {
+  console.log(products)
   const { products } = useContext(ProductsContext)
   const [mode, setMode] = useState(false)
   /** Load cart from local storage. Initialize if not present or incorrect. */
@@ -42,15 +43,17 @@ const CartProvider = ({ children }) => {
 
   /** The total cost of the items in the cart */
   const total = () => {
-    try {
-      return contents.reduce((sum, [id, quantity]) => (sum + products[id].price * quantity, 0))
-    } catch (e) {
-      console.log(e.message)
+    if (contents.length > 0) {
+      var sum = 0
+      contents.forEach(item => {
+        sum = sum + products[item[0]].price * item[1]
+      })
+      return sum
     }
+    return 0
   }
-  
   /** Sets quantity of item with `id` */
-  
+
   function set(id, quantity) {
     const index = contents.findIndex(item => item[0] === id)
     setContents(state => {
@@ -58,7 +61,7 @@ const CartProvider = ({ children }) => {
       if (index !== -1) {
         newState[index] = [id, quantity]
       } else {
-        newState.push([ id, quantity ])
+        newState.push([id, quantity])
       }
       return newState
     })
@@ -69,7 +72,6 @@ const CartProvider = ({ children }) => {
     const currentItem = contents.find(item => item[0] === id)
     const currentQuantity = currentItem ? currentItem[1] : 0
     set(id, quantity + currentQuantity)
-    debugger
   }
 
   /** Removes item with `id` */
@@ -97,7 +99,7 @@ const CartProvider = ({ children }) => {
   }
 
   return (
-    <CartContext.Provider value={{...ctx}}>{children}</CartContext.Provider>
+    <CartContext.Provider value={{ ...ctx }}>{children}</CartContext.Provider>
   )
 }
 

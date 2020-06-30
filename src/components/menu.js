@@ -2,7 +2,7 @@ import React, { useState, useContext } from "react"
 import styled from "styled-components"
 import { ProductsContext } from "../components/productprovider"
 import { CartContext } from "../components/cartprovider"
-import ShoppingCart from './shoppingcart'
+import ShoppingCart from "./shoppingcart"
 
 const MenuStyles = styled.div`
   min-height: 100vh;
@@ -236,8 +236,10 @@ const MenuStyles = styled.div`
 `
 const MenuComponent = () => {
   const { products } = useContext(ProductsContext)
-  const {add, cart} = useContext(CartContext)
-  const categories = [...new Set(Object.keys(products).map(i => products[i].menu) )]
+  const { add, cart } = useContext(CartContext)
+  const categories = [
+    ...new Set(Object.keys(products).map(i => products[i].menu)),
+  ]
   const [currentCategory, setCurrentCategory] = useState(categories[0])
   const [buttonActive, setButtonActive] = useState(null)
 
@@ -247,6 +249,7 @@ const MenuComponent = () => {
   }
 
   const productsArray = Object.keys(products).map(id => products[id])
+  console.log(productsArray)
   return (
     <MenuStyles>
       <div className="menu-title-block">
@@ -278,7 +281,8 @@ const MenuComponent = () => {
         </ul>
       </div>
       <div className="cards-list">
-        {productsArray.filter(item => item.menu === currentCategory)
+        {productsArray
+          .filter(item => item.menu === currentCategory)
           .map(data => (
             <div className="Product" key={data.id}>
               <div className="Product_title">

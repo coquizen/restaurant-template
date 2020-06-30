@@ -25,7 +25,7 @@ ProductsProvider.propTypes = {
 */
 const Provider = ({ data, children }) => {
   /** Load product data from Gatsby store */
-  const initialDishes = processGatsbyData(data.allStripePrice.edges)
+  const initialDishes = processGatsbyData(data.allStripePrice)
   const [dishes, setDishes] = useState(initialDishes)
 
   /** On render and update, update products with live data */
@@ -73,21 +73,23 @@ Provider.propTypes = {
 const processGatsbyData = data => {
   var sanitizedData = {}
   let section
-  data.map(nodes => {
-    const { node } = nodes
-    if ((`${node.product.metadata.section}`) === undefined) {
+  console.log(`data.nodes: ${data.nodes[0].unit_amount}`)
+  data.nodes.map(node => {
+    if (`${node.product.metadata.section}` === undefined) {
       section = null
     } else {
       section = `${node.product.metadata.section}`
     }
     sanitizedData[node.product.id] = {
       id: node.product.id,
+      price_id: node.id,
       name: node.product.name,
       description: node.product.description && `${node.product.description}`,
-      price:  node.unit_amount_decimal && `${node.unit_amount_decimal / 100}`,
+      price: node.unit_amount && `${node.unit_amount / 100}`,
       menu: node.product.metadata.menu && `${node.product.metadata.menu}`,
-      section
+      section,
     }
+    console.log(sanitizedData)
   })
   return sanitizedData
 }
@@ -112,22 +114,20 @@ const processGatsbyData = data => {
 // }
 
 export const priceQuery = graphql`
-  query {
+  {
     allStripePrice {
-      edges {
-        node {
-          product {
-            id
-            name
-            description
-            metadata {
-              menu
-              section
-            }
+      nodes {
+        id
+        product {
+          id
+          description
+          metadata {
+            section
+            menu
           }
-          unit_amount_decimal
-          currency
+          name
         }
+        unit_amount
       }
     }
   }
